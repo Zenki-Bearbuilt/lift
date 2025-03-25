@@ -54,15 +54,30 @@
     }
 
     function closed() {
+      liff.closeWindow()
     }
 
     async function scanCode() {
+      const result = await liff.scanCode()
+      document.getElementById("scanCode").append(result.value)
     }
 
     function openWindow() {
+      liff.openWindow({
+        url: "https://line.me",
+        external: true
+      })
     }
 
     async function getFriendship() {
+      const friend = await liff.getFriendship();
+      document.getElementById("friendship").append(friend.friendFlag);
+
+      if (!friend.friendFlag) {
+        if (confirm("เพิ่มเพื่อน BOT ด้วยไหม?")) {
+          window.location = "https://lin.ee/bNpFjgl";
+        }
+      }
     }
 
     async function sendMsg() {
@@ -112,11 +127,17 @@
 
     async function main() {
       await liff.init({ liffId: "2007116185-nZPrwzvB" })
-      getEnvironment()
-      getUserProfile()
-      getContext()
-      // getFriendship()
-      // createUniversalLink()
+      document.getElementById("isLoggedIn").append(liff.isLoggedIn())
+      if (liff.isLoggedIn()) {
+        getEnvironment()
+        getUserProfile()
+        getContext()
+        getFriendship()
+        // createUniversalLink()
+      } else {
+        liff.login()
+      }
+      
     }
     main()
   </script>
